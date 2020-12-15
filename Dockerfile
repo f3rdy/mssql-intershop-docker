@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1.0-experimental
 
-FROM mcr.microsoft.com/mssql/server
+FROM mcr.microsoft.com/mssql/server:2017-latest
 
 ENV ACCEPT_EULA=yes
 
@@ -20,12 +20,11 @@ RUN --mount=type=secret,id=sa_pw export MSSQL_SA_PASSWORD=$(cat /run/secrets/sa_
     /opt/mssql-tools/bin/sqlcmd -b -S localhost -U sa -P ${MSSQL_SA_PASSWORD} -i /icmdb.sql && \
     sleep 10 && \
     ps -j -C sqlservr --no-headers | awk "{print \$1}" | xargs kill && \
-    sleep 10 && \
-    chown mssql:root /opt/mssql /var/opt/mssql -R
+    sleep 10
 
 EXPOSE 1433
 
-USER mssql
+#USER mssql
 
 CMD [ "bash", "/startup.sh" ]
 
